@@ -14,15 +14,8 @@ ApplicationWindow {
     Material.theme: Material.Dark
     Material.accent: Material.Grey
 
-    ColumnLayout {
+    AdvancedMap {
+        id: map
         anchors.fill: parent
-        spacing: 2
-
-        AdvancedMap {
-            id: map
-            Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-        }
     }
 }

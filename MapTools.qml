@@ -5,6 +5,8 @@ import QtQuick.Layouts 1.3
 ColumnLayout {
 
     signal clickToSource()
+    signal zoomUp()
+    signal zoomDown()
 
     readonly property string sourceToSourceIcon: "qrc:/images/map-marker-btn.png"
     readonly property int widthButtons: width
@@ -13,50 +15,64 @@ ColumnLayout {
     property string colorButtons: "#222f3e"
     property string colorBorderButtons: "white"
 
+    property alias enabledZoomUp: btnZoomUp.enabled
+    property alias enabledZoomDown: btnZoomDown.enabled
+
+    property int intervalHoldZoom: 100
+
+    Timer {
+        id: timerUp
+        interval: intervalHoldZoom
+        repeat: true
+        onTriggered: zoomUp()
+    }
+
+    Timer {
+        id: timerDown
+        interval: intervalHoldZoom
+        repeat: true
+        onTriggered: zoomDown()
+    }
+
     CircleButton {
+        id: btnToSource
         Layout.preferredWidth: widthButtons
         Layout.preferredHeight: heightButtons
         color: colorButtons
         border.color: colorBorderButtons
-
-        Image {
-            source: sourceToSourceIcon
-            anchors.fill: parent
-            anchors.margins: 8
-            fillMode: Image.PreserveAspectFit
-        }
-
+        icon.source: sourceToSourceIcon
         onClicked: clickToSource()
     }
 
     CircleButton {
+        id: btnZoomUp
         Layout.preferredWidth: widthButtons
         Layout.preferredHeight: heightButtons
         color: colorButtons
         border.color: colorBorderButtons
-
-        Text {
-            text: "+"
-            anchors.centerIn: parent
-            color: "white"
-            font.pixelSize: parent.height / 2
-            font.bold: true
-        }
+        text: "+"
+        font.bold: true
+        font.pointSize: 20 * scale
+        onClicked: zoomUp()
+        onPressAndHold: { zoomUp(); timerUp.start() }
+        onReleased: timerUp.stop()
+        onCanceled: timerUp.stop()
+        onEnabledChanged: { timerUp.stop() }
     }
 
     CircleButton {
+        id: btnZoomDown
         Layout.preferredWidth: widthButtons
         Layout.preferredHeight: heightButtons
         color: colorButtons
         border.color: colorBorderButtons
-
-        Text {
-            text: "-"
-            anchors.centerIn: parent
-            color: "white"
-            font.pixelSize: parent.height / 2
-            font.bold: true
-        }
-    }
-
+        text: "-"
+        font.bold: true
+        font.pointSize: 20 * scale
+        onClicked: zoomDown()
+        onPressAndHold: { zoomDown(); timerDown.start() }
+        onReleased: timerDown.stop()
+        onCanceled: timerDown.stop()
+        onEnabledChanged: timerDown.stop()
+    }    
 }
