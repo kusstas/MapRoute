@@ -3,5 +3,6 @@
         <file>map-icon.ico</file>
         <file>map-marker.png</file>
         <file>map-marker-btn.png</file>
+        <file>target.png</file>
     </qresource>
 </RCC>

@@ -5,10 +5,12 @@ import QtQuick.Layouts 1.3
 ColumnLayout {
 
     signal clickToSource()
+    signal clickSetCenter()
     signal zoomUp()
     signal zoomDown()
 
     readonly property string sourceToSourceIcon: "qrc:/images/map-marker-btn.png"
+    readonly property string sourceToCenterIcon: "qrc:/images/target.png"
     readonly property int widthButtons: width
     readonly property int heightButtons: width
 
@@ -45,6 +47,16 @@ ColumnLayout {
     }
 
     CircleButton {
+        id: btnSetCenter
+        Layout.preferredWidth: widthButtons
+        Layout.preferredHeight: heightButtons
+        color: colorButtons
+        border.color: colorBorderButtons
+        icon.source: sourceToCenterIcon
+        onClicked: clickSetCenter()
+    }
+
+    CircleButton {
         id: btnZoomUp
         Layout.preferredWidth: widthButtons
         Layout.preferredHeight: heightButtons
@@ -74,5 +86,5 @@ ColumnLayout {
         onReleased: timerDown.stop()
         onCanceled: timerDown.stop()
         onEnabledChanged: timerDown.stop()
-    }    
+    }
 }
