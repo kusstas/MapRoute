@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>AdvancedMap.qml</file>
+        <file>Marker.qml</file>
+        <file>MapTools.qml</file>
+        <file>CircleButton.qml</file>
+    </qresource>
+</RCC>

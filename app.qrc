@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>map-icon.ico</file>
+        <file>map-marker.png</file>
+        <file>map-marker-btn.png</file>
+    </qresource>
+</RCC>
