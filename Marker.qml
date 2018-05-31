@@ -3,12 +3,12 @@ import QtLocation 5.9
 
 MapQuickItem {
     property string sourceIcon: "qrc:/images/map-marker.png"
-    property string letter: "S"
+    property string index: "M"
 
     sourceItem: Image {
         source: sourceIcon
         Text {
-            text: letter
+            text: index
             anchors.fill: parent
 
             horizontalAlignment: Text.AlignHCenter

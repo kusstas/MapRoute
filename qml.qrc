@@ -5,6 +5,6 @@
         <file>Marker.qml</file>
         <file>MapTools.qml</file>
         <file>CircleButton.qml</file>
-        <file>CoordinateTable.qml</file>
+        <file>RoutesView.qml</file>
     </qresource>
 </RCC>

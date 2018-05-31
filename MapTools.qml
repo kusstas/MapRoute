@@ -14,11 +14,12 @@ ColumnLayout {
     readonly property int widthButtons: width
     readonly property int heightButtons: width
 
-    property string colorButtons: "#222f3e"
-    property string colorBorderButtons: "white"
+    property color colorButtons: "#222f3e"
+    property color colorBorderButtons: "white"
 
     property alias enabledZoomUp: btnZoomUp.enabled
     property alias enabledZoomDown: btnZoomDown.enabled
+    property alias enabledSetCenter: btnSetCenter.enabled
 
     property int intervalHoldZoom: 100
 
