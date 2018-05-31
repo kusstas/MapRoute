@@ -93,8 +93,7 @@ Map {
         id: tools
         anchors.right: map.right
         anchors.bottom: map.bottom
-        anchors.rightMargin: 5
-        anchors.bottomMargin: 5
+        anchors.margins: 5
         width: sizeButtonTools
 
         onClickToSource: toSourceLocation()
