@@ -4,7 +4,10 @@ import QtPositioning 5.8
 
 Map {
     id: map
-    plugin: Plugin { name: "osm" }
+    plugin: Plugin {
+        name: "osm"
+    }
+
     center: startFromSource ? sourceCoordinate() : QtPositioning.coordinate()
     anchors.fill: parent
     copyrightsVisible: false

@@ -33,31 +33,55 @@ ApplicationWindow {
             onClickB2: map.trakingCoordinate(markerB2.index)
 
             onClickMakeRoutes: {
-                routeQueryA.clearWaypoints()
-                routeQueryA.addWaypoint(markerA1.coordinate)
-                routeQueryA.addWaypoint(markerA2.coordinate)
+                routeAQuery.clearWaypoints()
+                routeAQuery.addWaypoint(markerA1.coordinate)
+                routeAQuery.addWaypoint(markerA2.coordinate)
+                routeAModel.update()
 
-                routeQueryA.travelModes = RouteQuery.CarTravel
-                routeQueryA.routeOptimizations = RouteQuery.FastestRoute
-
-                routeAModel.update();
+                routeBQuery.clearWaypoints()
+                routeBQuery.addWaypoint(markerB1.coordinate)
+                routeBQuery.addWaypoint(markerB2.coordinate)
+                routeBModel.update()
             }
+        }
+
+        RouteQuery {
+            id: routeAQuery
+        }
+
+        RouteQuery {
+            id: routeBQuery
         }
 
         RouteModel {
             id: routeAModel
-            plugin : map.plugin
-            query:  RouteQuery { id: routeQueryA }
+            plugin: map.plugin
+            query: routeAQuery
+        }
+
+        RouteModel {
+            id: routeBModel
+            plugin: map.plugin
+            query: routeBQuery
         }
 
         MapItemView {
             model: routeAModel
             delegate: MapRoute {
                 route: routeData
-                line.color: "blue"
-                line.width: 5
+                line.color: "red"
+                line.width: 7
                 smooth: true
-                opacity: 0.8
+            }
+        }
+
+        MapItemView {
+            model: routeBModel
+            delegate: MapRoute {
+                route: routeData
+                line.color: "green"
+                line.width: 7
+                smooth: true
             }
         }
 
