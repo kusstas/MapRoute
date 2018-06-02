@@ -7,7 +7,7 @@ ColumnLayout {
     signal clickA2;
     signal clickB1;
     signal clickB2;
-    signal clickMakeRoutes;
+    signal clickBuildRoutes;
 
     readonly property int widthButtons: width
     readonly property int heightButtons: width
@@ -64,14 +64,14 @@ ColumnLayout {
     }
 
     CircleButton {
-        id: btnMakeRoute
+        id: btnBuildRoute
         Layout.preferredWidth: widthButtons
         Layout.preferredHeight: heightButtons
         color: colorButtons
         border.color: colorBorderButtons
-        text: "MK"
+        text: "B"
         font.bold: true
         font.pointSize: 12
-        onClicked: clickMakeRoutes()
+        onClicked: clickBuildRoutes()
     }
 }

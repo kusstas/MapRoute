@@ -6,5 +6,6 @@
         <file>MapTools.qml</file>
         <file>CircleButton.qml</file>
         <file>RoutesTools.qml</file>
+        <file>RoutesManager.qml</file>
     </qresource>
 </RCC>

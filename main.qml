@@ -13,76 +13,51 @@ ApplicationWindow {
     title: qsTr("MapRoute")
 
     property int sizeButtonTools: 45
+    property real stepZoom: 0.2
+    property color colorRouteA: "red"
+    property color colorRouteB: "green"
+    property int widthLineRoute: 6
+    property real opacityLineRoute: 0.95
 
     AdvancedMap {
         id: map
         anchors.fill: parent
-        sizeButtonTools: sizeButtonTools
 
-        RoutesTools {
-            id: routesTools
-            anchors.right: parent.right
-            anchors.top:  parent.top
-            anchors.margins: 5
-            width: sizeButtonTools
-            enabled: !map.isTrackingCoordinate
-
-            onClickA1: map.trakingCoordinate(markerA1.index)
-            onClickA2: map.trakingCoordinate(markerA2.index)
-            onClickB1: map.trakingCoordinate(markerB1.index)
-            onClickB2: map.trakingCoordinate(markerB2.index)
-
-            onClickMakeRoutes: {
-                routeAQuery.clearWaypoints()
-                routeAQuery.addWaypoint(markerA1.coordinate)
-                routeAQuery.addWaypoint(markerA2.coordinate)
-                routeAModel.update()
-
-                routeBQuery.clearWaypoints()
-                routeBQuery.addWaypoint(markerB1.coordinate)
-                routeBQuery.addWaypoint(markerB2.coordinate)
-                routeBModel.update()
-            }
-        }
-
-        RouteQuery {
-            id: routeAQuery
-        }
-
-        RouteQuery {
-            id: routeBQuery
-        }
-
-        RouteModel {
-            id: routeAModel
+        RoutesManager {
+            id: routesManager
             plugin: map.plugin
-            query: routeAQuery
-        }
 
-        RouteModel {
-            id: routeBModel
-            plugin: map.plugin
-            query: routeBQuery
-        }
+            onMakeQueryRouteA: {
+                query.clearWaypoints()
+                query.addWaypoint(markerA1.coordinate)
+                query.addWaypoint(markerA2.coordinate)
+            }
 
-        MapItemView {
-            model: routeAModel
-            delegate: MapRoute {
-                route: routeData
-                line.color: "red"
-                line.width: 7
-                smooth: true
+            onMakeQueryRouteB: {
+                query.clearWaypoints()
+                query.addWaypoint(markerB1.coordinate)
+                query.addWaypoint(markerB2.coordinate)
             }
         }
 
-        MapItemView {
-            model: routeBModel
-            delegate: MapRoute {
-                route: routeData
-                line.color: "green"
-                line.width: 7
-                smooth: true
-            }
+        MapRoute {
+            route: routesManager.routeA
+            line.color: colorRouteA
+            line.width: widthLineRoute
+            opacity: opacityLineRoute
+        }
+
+        MapRoute {
+            route: routesManager.routeB
+            line.color: colorRouteB
+            line.width: widthLineRoute
+            opacity: opacityLineRoute
+        }
+
+        Marker {
+            id: sourceMarker
+            index: "S"
+            coordinate: map.sourceCoordinate()
         }
 
         Marker {
@@ -136,6 +111,53 @@ ApplicationWindow {
         Marker {
             id: markerOverlap
             index: "O"
+        }
+    }
+
+    MapTools {
+        id: tools
+        anchors.right: map.right
+        anchors.bottom: map.bottom
+        anchors.margins: 5
+        width: sizeButtonTools
+
+        onClickToSource: map.toSourceLocation()
+        onZoomUp: map.zoomLevel += stepZoom
+        onZoomDown: map.zoomLevel -= stepZoom
+        onClickSetCenter: map.trakingCoordinate(trackIdSetCenter)
+        enabledSetCenter: !map.isTrackingCoordinate
+
+        property string trackIdSetCenter: "map.center"
+
+        Connections {
+            target: map
+            onCoordinateSelected:  {
+                if (trackingId === tools.trackIdSetCenter) {
+                    map.setCenter(coordinate)
+                }
+            }
+            onZoomLevelChanged: {
+                tools.enabledZoomUp = map.zoomLevel < map.maximumZoomLevel
+                tools.enabledZoomDown = map.zoomLevel > map.minimumZoomLevel
+            }
+        }
+    }
+
+    RoutesTools {
+        id: routesTools
+        anchors.right: parent.right
+        anchors.top:  parent.top
+        anchors.margins: 5
+        width: sizeButtonTools
+        enabled: !map.isTrackingCoordinate
+
+        onClickA1: map.trakingCoordinate(markerA1.index)
+        onClickA2: map.trakingCoordinate(markerA2.index)
+        onClickB1: map.trakingCoordinate(markerB1.index)
+        onClickB2: map.trakingCoordinate(markerB2.index)
+
+        onClickBuildRoutes: {
+            routesManager.buildAllRoutes()
         }
     }
 }

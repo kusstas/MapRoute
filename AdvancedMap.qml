@@ -5,9 +5,10 @@ import QtPositioning 5.8
 Map {
     id: map
     plugin: Plugin {
-        name: "osm"
+        name: "here"
+        PluginParameter { name: "here.app_id"; value: "JBf7DSJc2EG3GndwTA3r" }
+        PluginParameter { name: "here.token"; value: "WZX2OJPFdPJd3VQOX7Ik8g" }
     }
-
     center: startFromSource ? sourceCoordinate() : QtPositioning.coordinate()
     anchors.fill: parent
     copyrightsVisible: false
@@ -16,11 +17,7 @@ Map {
     property bool startFromSource: true
     property int updateIntervalSource: 1000
     property real animToSourceDuration: 400
-    property int sizeButtonTools: 45
-    property real stepZoom: 0.2
 
-    property alias markerSource: sourceMarker
-    property alias tools: tools
     readonly property alias isTrackingCoordinate: mouseTracker.tracking
     readonly property alias trackingId: mouseTracker.trackingId
 
@@ -31,12 +28,12 @@ Map {
         animToSource.start()
     }
 
-    function sourceCoordinate() {
-        return positionSource.position.coordinate
-    }
-
     function toSourceLocation() {
         setCenter(sourceCoordinate())
+    }
+
+    function sourceCoordinate() {
+        return positionSource.position.coordinate
     }
 
     function coordinateFromMousePos() {
@@ -46,7 +43,6 @@ Map {
     function trakingCoordinate(trackingId) {
         if (mouseTracker.tracking)
             return false
-
         mouseTracker.trackingId = trackingId
         mouseTracker.tracking = true;
         return true
@@ -68,7 +64,6 @@ Map {
         id: positionSource
         active: true
         updateInterval: updateIntervalSource
-        onPositionChanged: sourceMarker.coordinate = position.coordinate
     }
 
     MouseArea {
@@ -85,37 +80,5 @@ Map {
         property bool tracking: false
         property string trackingId
 
-    }
-
-    Marker {
-        id: sourceMarker
-        index: "S"
-    }
-
-    MapTools {
-        id: tools
-        anchors.right: map.right
-        anchors.bottom: map.bottom
-        anchors.margins: 5
-        width: sizeButtonTools
-
-        onClickToSource: toSourceLocation()
-        onZoomUp: map.zoomLevel += stepZoom
-        onZoomDown: map.zoomLevel -= stepZoom
-        onClickSetCenter: trakingCoordinate(trackIdSetCenter)
-        enabledSetCenter: !isTrackingCoordinate
-
-        property string trackIdSetCenter: "map.center"
-    }
-
-    onCoordinateSelected:  {
-        if (trackingId === tools.trackIdSetCenter) {
-            setCenter(coordinate)
-        }
-    }
-
-    onZoomLevelChanged: {
-        tools.enabledZoomUp = map.zoomLevel < map.maximumZoomLevel
-        tools.enabledZoomDown = map.zoomLevel > map.minimumZoomLevel
     }
 }
