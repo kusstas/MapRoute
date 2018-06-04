@@ -4,6 +4,7 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtPositioning 5.8
 import QtLocation 5.9
+import Custom.RouteIntersector 1.0
 
 ApplicationWindow {
     id: window
@@ -25,6 +26,7 @@ ApplicationWindow {
 
         RoutesManager {
             id: routesManager
+            objectName: "routesManager"
             plugin: map.plugin
 
             onMakeQueryRouteA: {
@@ -37,6 +39,18 @@ ApplicationWindow {
                 query.clearWaypoints()
                 query.addWaypoint(markerB1.coordinate)
                 query.addWaypoint(markerB2.coordinate)
+            }
+
+        }
+
+        RouteIntersector {
+            id: routeIntersector
+            objectName: "routeIntersector"
+            routeA: routesManager.routeA
+            routeB: routesManager.routeB
+
+            onResultReady: {
+                console.log(result)
             }
         }
 

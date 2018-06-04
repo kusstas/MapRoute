@@ -8,6 +8,7 @@ Map {
         name: "here"
         PluginParameter { name: "here.app_id"; value: "JBf7DSJc2EG3GndwTA3r" }
         PluginParameter { name: "here.token"; value: "WZX2OJPFdPJd3VQOX7Ik8g" }
+        PluginParameter { name: "here.mapping.highdpi_tiles"; value: true }
     }
     center: startFromSource ? sourceCoordinate() : QtPositioning.coordinate()
     anchors.fill: parent

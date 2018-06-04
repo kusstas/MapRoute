@@ -9,6 +9,7 @@ Item {
 
     signal makeQueryRouteA(var query)
     signal makeQueryRouteB(var query)
+    signal complete()
 
     function buildAllRoutes() {
         makeQueryRouteA(routeQuery)
@@ -35,14 +36,19 @@ Item {
                 routeModel.target = routeB
                 routeModel.update()
             }
+            else if (target == routeB) {
+                complete()
+            }
         }
     }
 
     Route {
         id: routeA
+        objectName: "routeA"
     }
 
     Route {
         id: routeB
+        objectName: "routeB"
     }
 }
