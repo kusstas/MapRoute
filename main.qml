@@ -40,7 +40,6 @@ ApplicationWindow {
                 query.addWaypoint(markerB1.coordinate)
                 query.addWaypoint(markerB2.coordinate)
             }
-
         }
 
         RouteIntersector {
@@ -49,8 +48,13 @@ ApplicationWindow {
             routeA: routesManager.routeA
             routeB: routesManager.routeB
 
-            onResultReady: {
-                console.log(result)
+            onStarted: {
+                console.log("start search intetsection")
+            }
+
+            onComplete: {
+                markerIntersect.coordinate = result
+                console.log("end search intetsection")
             }
         }
 
@@ -123,7 +127,7 @@ ApplicationWindow {
         }
 
         Marker {
-            id: markerOverlap
+            id: markerIntersect
             index: "O"
         }
     }

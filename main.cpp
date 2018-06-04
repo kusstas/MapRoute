@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    QObject::connect(routesManager, SIGNAL(complete()), routeIntersector, SLOT(computeIntersect()));
+    QObject::connect(routesManager, SIGNAL(complete()), routeIntersector, SLOT(findIntersect()));
 
     return app.exec();
 }

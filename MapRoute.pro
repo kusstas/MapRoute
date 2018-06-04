@@ -14,7 +14,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    route_intersector.cpp
+    route_intersector.cpp \
+    route_intercect_worker.cpp
 
 RESOURCES += qml.qrc \
     app.qrc
@@ -31,4 +32,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    route_intersector.h
+    route_intersector.h \
+    route_intercect_worker.h

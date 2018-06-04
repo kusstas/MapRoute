@@ -2,7 +2,10 @@
 #define ROUTE_INTERSECTOR_H
 
 #include <QObject>
+#include <QThread>
 #include <QGeoCoordinate>
+
+#include "route_intercect_worker.h"
 
 class RouteIntersector : public QObject
 {
@@ -13,6 +16,7 @@ class RouteIntersector : public QObject
 public:
 
     explicit RouteIntersector(QObject* parent = nullptr);
+    virtual ~RouteIntersector();
 
     QObject* routeA() const;
     QObject* routeB() const;
@@ -22,16 +26,21 @@ public:
 
 public slots:
 
-    void computeIntersect();
+    void findIntersect();
 
 signals:
 
-    void resultReady(QGeoCoordinate result);
+    void started();
+    void complete(QGeoCoordinate result);
 
 private:
 
+    QThread m_thread;
+    RouteIntercectWorker m_worker;
+
     QObject* m_routeA;
     QObject* m_routeB;
+
 };
 
 #endif // ROUTE_INTERSECTOR_H
