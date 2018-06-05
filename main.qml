@@ -20,6 +20,42 @@ ApplicationWindow {
     property int widthLineRoute: 6
     property real opacityLineRoute: 0.85
 
+    footer: Rectangle {
+        color: "#222f3e"
+        height: 25
+        Text {
+            id: status
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 5
+            verticalAlignment: Text.AlignVCenter
+            color: "white"
+            text: {
+                var format = "Coordinate intersection: %1"
+                if (routesManager.isDownloading)
+                    return "Downloading..."
+                if (!markerIntersect.visible)
+                    return "Searching intersection..."
+                if (markerIntersect.coordinate !== QtPositioning.coordinate())
+                    return format.arg(markerIntersect.coordinate)
+                return "None"
+            }
+        }
+        Text {
+            id: centerCoordBar
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 5
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignRight
+            color: "white"
+            property string format: "Center: %1"
+            text: format.arg(map.center)
+        }
+    }
+
     AdvancedMap {
         id: map
         anchors.fill: parent
@@ -28,6 +64,11 @@ ApplicationWindow {
             id: routesManager
             objectName: "routesManager"
             plugin: map.plugin
+            property bool isDownloading: false
+
+            onStarted: {
+                isDownloading = true
+            }
 
             onMakeQueryRouteA: {
                 query.clearWaypoints()
@@ -44,6 +85,7 @@ ApplicationWindow {
             onComplete: {
                 mapRouteA.visible = true
                 mapRouteB.visible = true
+                isDownloading = false
             }
         }
 
@@ -53,14 +95,9 @@ ApplicationWindow {
             routeA: routesManager.routeA
             routeB: routesManager.routeB
 
-            onStarted: {
-                console.log("start search intetsection")
-            }
-
             onComplete: {
                 markerIntersect.coordinate = result
                 markerIntersect.visible = true
-                console.log("end search intetsection")
             }
         }
 
