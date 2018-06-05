@@ -7,11 +7,13 @@ Item {
     property alias routeA: routeA
     property alias routeB: routeB
 
+    signal started()
     signal makeQueryRouteA(var query)
     signal makeQueryRouteB(var query)
     signal complete()
 
     function buildAllRoutes() {
+        started()
         makeQueryRouteA(routeQuery)
         routeModel.target = routeA
         routeModel.update()

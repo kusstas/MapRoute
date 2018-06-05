@@ -16,9 +16,9 @@ ApplicationWindow {
     property int sizeButtonTools: 45
     property real stepZoom: 0.2
     property color colorRouteA: "red"
-    property color colorRouteB: "green"
+    property color colorRouteB: "blue"
     property int widthLineRoute: 6
-    property real opacityLineRoute: 0.95
+    property real opacityLineRoute: 0.85
 
     AdvancedMap {
         id: map
@@ -40,6 +40,11 @@ ApplicationWindow {
                 query.addWaypoint(markerB1.coordinate)
                 query.addWaypoint(markerB2.coordinate)
             }
+
+            onComplete: {
+                mapRouteA.visible = true
+                mapRouteB.visible = true
+            }
         }
 
         RouteIntersector {
@@ -54,11 +59,13 @@ ApplicationWindow {
 
             onComplete: {
                 markerIntersect.coordinate = result
+                markerIntersect.visible = true
                 console.log("end search intetsection")
             }
         }
 
         MapRoute {
+            id: mapRouteA
             route: routesManager.routeA
             line.color: colorRouteA
             line.width: widthLineRoute
@@ -66,6 +73,7 @@ ApplicationWindow {
         }
 
         MapRoute {
+            id: mapRouteB
             route: routesManager.routeB
             line.color: colorRouteB
             line.width: widthLineRoute
@@ -84,8 +92,11 @@ ApplicationWindow {
             Connections {
                 target: map
                 onCoordinateSelected: {
-                    if (trackingId === markerA1.index)
+                    if (trackingId === markerA1.index) {
                         markerA1.coordinate = coordinate
+                        mapRouteA.visible = false
+                        markerIntersect.visible = false
+                    }
                 }
             }
         }
@@ -96,8 +107,11 @@ ApplicationWindow {
             Connections {
                 target: map
                 onCoordinateSelected: {
-                    if (trackingId === markerA2.index)
+                    if (trackingId === markerA2.index) {
                         markerA2.coordinate = coordinate
+                        mapRouteA.visible = false
+                        markerIntersect.visible = false
+                    }
                 }
             }
         }
@@ -108,8 +122,11 @@ ApplicationWindow {
             Connections {
                 target: map
                 onCoordinateSelected: {
-                    if (trackingId === markerB1.index)
+                    if (trackingId === markerB1.index) {
                         markerB1.coordinate = coordinate
+                        mapRouteB.visible = false
+                        markerIntersect.visible = false
+                    }
                 }
             }
         }
@@ -120,8 +137,11 @@ ApplicationWindow {
             Connections {
                 target: map
                 onCoordinateSelected: {
-                    if (trackingId === markerB2.index)
+                    if (trackingId === markerB2.index) {
                         markerB2.coordinate = coordinate
+                        mapRouteB.visible = false
+                        markerIntersect.visible = false
+                    }
                 }
             }
         }
