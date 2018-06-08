@@ -143,36 +143,28 @@ void RouteIntercectWorker::compute()
             ++b;
         }
         else {
-            auto res = isIntersect(a->first, a->second, b->first, b->second);
+            auto pa = a;
+            auto pb = b;
+            std::pair<bool, QVector2D> res;
+            res.first = false;
+            while (!res.first && b != lpB.end() && b->first.x() < pa->second.x()) {
+                res = isIntersect(b->first, b->second, pa->first, pa->second);
+                ++b;
+            }
+
+            while (!res.first && a != lpA.end() && a->first.x() < pb->second.x()) {
+                res = isIntersect(a->first, a->second, pb->first, pb->second);
+                ++a;
+            }
+
             if (res.first) {
                 result.setLatitude(res.second.x());
                 result.setLongitude(res.second.y());
                 break;
             }
-            else {
-                auto na = a + 1;
-                auto nb = b + 1;
-                res = isIntersect(na->first, na->second, b->first, b->second);
-                if (res.first) {
-                    result.setLatitude(res.second.x());
-                    result.setLongitude(res.second.y());
-                    break;
-                }
-                else {
-                    ++b;
-                }
-                res = isIntersect(a->first, a->second, nb->first, nb->second);
-                if (res.first) {
-                    result.setLatitude(res.second.x());
-                    result.setLongitude(res.second.y());
-                    break;
-                }
-                else {
-                    ++a;
-                }
-            }
         }
     }
+
     emit complete(result);
     m_isRunning = false;
 }
