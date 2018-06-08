@@ -99,7 +99,7 @@ void RouteIntercectWorker::compute()
     QVector<LineSegment> lpA(pathA.size() - 1);
     QVector<LineSegment> lpB(pathB.size() - 1);
 
-    auto itA = pathA.begin();
+    auto itA = pathA.constBegin();
     for (auto it = lpA.begin(); it != lpA.end(); ++it) {
         auto const& c1 = itA->value<QGeoCoordinate>();
         auto const& c2 = (++itA)->value<QGeoCoordinate>();
@@ -111,7 +111,7 @@ void RouteIntercectWorker::compute()
                         std::make_pair(QVector2D(c2.latitude(), c2.longitude()), QVector2D(c1.latitude(), c1.longitude()));
     }
 
-    auto itB = pathB.begin();
+    auto itB = pathB.constBegin();
     for (auto it = lpB.begin(); it != lpB.end(); ++it) {
         auto const& c1 = itB->value<QGeoCoordinate>();
         auto const& c2 = (++itB)->value<QGeoCoordinate>();
@@ -130,9 +130,9 @@ void RouteIntercectWorker::compute()
     std::sort(lpA.begin(), lpA.end(), xless);
     std::sort(lpB.begin(), lpB.end(), xless);
 
-    auto a = lpA.begin();
-    auto b = lpB.begin();
-    while (a != lpA.end() && b != lpB.end()) {
+    auto a = lpA.constBegin();
+    auto b = lpB.constBegin();
+    while (a != lpA.constEnd() && b != lpB.constEnd()) {
         if (a->second.x() < b->first.x()) {
             ++a;
         }
