@@ -1,8 +1,10 @@
 #include "route_intercect_worker.h"
 
 #include <QVariantList>
+#include <QVector>
 #include <QJSValue>
 #include <QVector2D>
+#include <QDebug>
 
 #include <tuple>
 #include <cmath>
@@ -87,28 +89,41 @@ bool RouteIntercectWorker::isRunning() const
 void RouteIntercectWorker::compute()
 {
     m_isRunning = true;
-    bool intersectFind = false;
     QGeoCoordinate result;
     QVariantList const& pathA = routeA()->property("path").value<QJSValue>().toVariant().value<QVariantList>();
     QVariantList const& pathB = routeB()->property("path").value<QJSValue>().toVariant().value<QVariantList>();
 
-    for (auto aIt1 = pathA.begin(), aIt2 = aIt1 + 1; aIt2 != pathA.end() && !intersectFind; aIt1++, aIt2++) {
-        QGeoCoordinate const& a1 = aIt1->value<QGeoCoordinate>();
-        QGeoCoordinate const& a2 = aIt2->value<QGeoCoordinate>();
-        for (auto bIt1 = pathB.begin(), bIt2 = bIt1 + 1; bIt2 != pathB.end() && !intersectFind; bIt1++, bIt2++) {
-            QGeoCoordinate const& b1 = bIt1->value<QGeoCoordinate>();
-            QGeoCoordinate const& b2 = bIt2->value<QGeoCoordinate>();
+    using SegmentLine = std::pair<QVector2D, QVector2D>;
 
-            auto const& intersect = isIntersect(QVector2D(a1.latitude(), a1.longitude()), QVector2D(a2.latitude(), a2.longitude()),
-                                                QVector2D(b1.latitude(), b1.longitude()), QVector2D(b2.latitude(), b2.longitude()));
+    QVector<SegmentLine> lpA(pathA.size() - 1);
+    QVector<SegmentLine> lpB(pathB.size() - 1);
 
-            intersectFind = intersect.first;
-            if (intersectFind) {
-                result.setLatitude(intersect.second.x());
-                result.setLongitude(intersect.second.y());
-            }
-        }
+    auto itA = pathA.begin();
+    for (auto it = lpA.begin(); it != lpA.end(); ++it) {
+        auto const& c1 = itA->value<QGeoCoordinate>();
+        auto const& c2 = (++itA)->value<QGeoCoordinate>();
+
+        auto const& x1 = c1.latitude();
+        auto const& x2 = c2.latitude();
+
+        *it = x1 < x2 ? std::make_pair(QVector2D(c1.latitude(), c1.longitude()), QVector2D(c2.latitude(), c2.longitude())) :
+                        std::make_pair(QVector2D(c2.latitude(), c2.longitude()), QVector2D(c1.latitude(), c1.longitude()));
     }
+
+    auto itB = pathB.begin();
+    for (auto it = lpB.begin(); it != lpB.end(); ++it) {
+        auto const& c1 = itB->value<QGeoCoordinate>();
+        auto const& c2 = (++itB)->value<QGeoCoordinate>();
+
+        auto const& x1 = c1.latitude();
+        auto const& x2 = c2.latitude();
+
+        *it = x1 < x2 ? std::make_pair(QVector2D(c1.latitude(), c1.longitude()), QVector2D(c2.latitude(), c2.longitude())) :
+                        std::make_pair(QVector2D(c2.latitude(), c2.longitude()), QVector2D(c1.latitude(), c1.longitude()));
+    }
+
+
+
     emit complete(result);
     m_isRunning = false;
 }
