@@ -6,6 +6,7 @@
 #include <QVector2D>
 #include <QDebug>
 
+#include <algorithm>
 #include <tuple>
 #include <cmath>
 
@@ -93,10 +94,10 @@ void RouteIntercectWorker::compute()
     QVariantList const& pathA = routeA()->property("path").value<QJSValue>().toVariant().value<QVariantList>();
     QVariantList const& pathB = routeB()->property("path").value<QJSValue>().toVariant().value<QVariantList>();
 
-    using SegmentLine = std::pair<QVector2D, QVector2D>;
+    using LineSegment = std::pair<QVector2D, QVector2D>;
 
-    QVector<SegmentLine> lpA(pathA.size() - 1);
-    QVector<SegmentLine> lpB(pathB.size() - 1);
+    QVector<LineSegment> lpA(pathA.size() - 1);
+    QVector<LineSegment> lpB(pathB.size() - 1);
 
     auto itA = pathA.begin();
     for (auto it = lpA.begin(); it != lpA.end(); ++it) {
@@ -122,8 +123,35 @@ void RouteIntercectWorker::compute()
                         std::make_pair(QVector2D(c2.latitude(), c2.longitude()), QVector2D(c1.latitude(), c1.longitude()));
     }
 
+    auto xless = [] (LineSegment const& l, LineSegment const& r) {
+        return l.first.x() < r.first.x();
+    };
 
+    std::sort(lpA.begin(), lpA.end(), xless);
+    std::sort(lpB.begin(), lpB.end(), xless);
 
+    auto a = lpA.begin();
+    auto b = lpB.begin();
+    while (a != lpA.end() && b != lpB.end()) {
+        if (a->second.x() < b->first.x()) {
+            ++a;
+        }
+        else if (b->second.x() < a->first.x()) {
+            ++b;
+        }
+        else {
+            auto res = isIntersect(a->first, a->second, b->first, b->second);
+            if (res.first) {
+                result.setLatitude(res.second.x());
+                result.setLongitude(res.second.y());
+                break;
+            }
+            else {
+                ++a;
+                ++b;
+            }
+        }
+    }
     emit complete(result);
     m_isRunning = false;
 }
