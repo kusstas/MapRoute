@@ -124,6 +124,9 @@ void RouteIntercectWorker::compute()
     }
 
     auto xless = [] (LineSegment const& l, LineSegment const& r) {
+        if (l.first.x() == r.first.x()) {
+            return l.first.y() < r.first.y();
+        }
         return l.first.x() < r.first.x();
     };
 
@@ -147,8 +150,26 @@ void RouteIntercectWorker::compute()
                 break;
             }
             else {
-                ++a;
-                ++b;
+                auto na = a + 1;
+                auto nb = b + 1;
+                res = isIntersect(na->first, na->second, b->first, b->second);
+                if (res.first) {
+                    result.setLatitude(res.second.x());
+                    result.setLongitude(res.second.y());
+                    break;
+                }
+                else {
+                    ++b;
+                }
+                res = isIntersect(a->first, a->second, nb->first, nb->second);
+                if (res.first) {
+                    result.setLatitude(res.second.x());
+                    result.setLongitude(res.second.y());
+                    break;
+                }
+                else {
+                    ++a;
+                }
             }
         }
     }
